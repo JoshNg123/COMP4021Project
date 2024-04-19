@@ -1,0 +1,42 @@
+
+canvas {
+    background: url(background.png);
+    background-size: cover;
+}
+  
+#game-container {
+    position: relative;
+    width: 854px;
+    height: 480px;
+    background-color: lightgray;
+  }
+  
+  #signin-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 400px;
+  }
+  
+  .rectangle {
+    background-color: rgba(255, 255, 255, 0.75);
+  }
+
+  #title {
+    font-family: "Jacquard 24";
+    font-weight: 400;
+    font-size: 80px;
+    font-style: normal;
+    text-align: center; 
+  }
+
+  #instructions {
+    padding-left: 20px;
+    padding-top: 10px;
+    font-family: "Jacquard 24";
+    font-size: 30px;
+
+  }
+  

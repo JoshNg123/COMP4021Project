@@ -4,9 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battlefield Blitz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jacquard+24&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <h1>Hello Natcha, This is Josiah here, I love you</h1>
-    <h1>Natcha loves jossie too!</h1>
+    <!-- <h1>Hello Natcha, This is Josiah here, I love you</h1>
+    <h1>Natcha loves jossie too!</h1> -->
+    <div id="game-container">
+      <div id="signin-overlay" class="rectangle"> 
+        <div id = "title"> Battlefield Blitz </div>
+        <div id = "instructions"> Instructions: </div>
+      </div>
+      <canvas width="854px" height="480px"></canvas>
+    </div>
+
+    <script src="ui.js"></script>
+
+    <script>
+      $(function() {
+          // Initialize the UI
+          UI.initialize();
+
+          //later implement if log in successful --> hife the signin-overlay div 
+      }); 
+    </script>
   </body>
 </html>
