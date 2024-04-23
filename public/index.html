@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jacquard+24&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+25&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
@@ -15,18 +16,148 @@
     <div id="game-container">
       <div id="signin-overlay" class="rectangle"> 
         <div id = "title"> Battlefield Blitz </div>
-        <div id = "instructions"> Instructions: </div>
+        <div class="container">
+          <div class = "item" id = "signin-form-page"> 
+            <div id = "box-title">Welcome Back!</div>
+            <form id="signin-form" class="col">
+              <div class="spacer-0"></div>
+              <div class="caption">Enter your credentials to log in!</div>
+              <div class="spacer-0"></div>
+              <label for="signin-username">First Name</label>
+              <input id="signin-username" type = "username" placeholder="Enter your username"></input>
+              <div class="spacer-0"></div>
+              <label for="signin-password">Password</label>
+              <input id="signin-password" type="password" placeholder="Enter your password"></input>
+              <div class="spacer-0"></div>
+              <div class="spacer-0"></div>
+              <div class="spacer-0"></div>
+              <button class="button" id = "battle-button">Battle Now!</button>
+              <button class="button" id="register-button">Register</button>
+            </form>
+          </div>
+
+          <div class = "item" id = "register-form-page"> 
+            <div id = "box-title">Register Here!</div>
+            <form id="register-form" class="col">
+              <div class="spacer-0"></div>
+              <label for="register-username">Username</label>
+              <input id="register-username" type = "username" placeholder="Enter your username"></input>
+              <div class="spacer-0"></div>
+              <label for="register-password">Password</label>
+              <input id="register-password" type="password" placeholder="Enter your password"></input>
+              <label for="register-password2">Confirm Password</label>
+              <input id="register-password2" type="password" placeholder="Enter your password again"></input>
+              <div class="spacer-0"></div>
+              <div class="spacer-0"></div>
+              <div class="spacer-0"></div>
+              <button class="button" >Register!</button>
+              <button class="button" id="back-button">Back to Sign In</button>
+            </form>
+          </div>
+
+          <div class = "item"> 
+            <div id = "box-title">Instructions</div>
+            <img src = "sword.png" id = "sword-image" height="100" width="100">
+            <div id = "instruction-description">Use the left and right button to move the player around. Shoot with spacebar. Special power-ups may appear be sure to collect them!</div> 
+            <div class="container1">
+              <div class="line">
+                <div class="sprite" id="sprite1"></div>
+                <span class="sprite-description">Hit this and lose a life!</span>
+              </div>
+              <div class="line">
+                <div class="sprite" id="sprite2"></div>
+                <span class="sprite-description">Freeze your opponent!</span>
+              </div>
+              <div class="line">
+                <div class="sprite" id="sprite3"></div>
+                <span class="sprite-description">Reload Faster!</span>
+              </div>
+              <div class="line">
+                <div class="sprite" id="sprite4"></div>
+                <span class="sprite-description">Increase a life!</span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+        
       </div>
+
+      <div id="player-match-overlay" class="rectangle">
+        <div id="title">Battlefield Blitz</div>
+        <div class="container">
+          <div class="item" id="match-player-box">
+            <div id="box-title">Welcome to the Battlefield!</div>
+            <div class="spacer-0"></div>
+            <div id="online-players">
+              <div id="box-title">Online Players: </div>
+              <div class="spacer-0"></div>
+              <div class="spacer-0"></div>
+              <div class="spacer-0"></div>
+              <button class="online-player-button" role="button">User1</button>
+              <button class="online-player-button" role="button">User2</button>
+              <button class="online-player-button" role="button">User3</button>
+            </div>
+            <div id="user-match-text">You are currently matched with: User1</div>
+            <div class="spacer-0"></div>
+            <div class="spacer-0"></div>
+            <button class="button" id="match-back-button">Back to Sign In</button>
+            <button class="button" id="start-game-button">Start Game!</button>
+          </div>
+        </div>
+      </div>
+      
+
       <canvas width="854px" height="480px"></canvas>
     </div>
 
     <script src="ui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
       $(function() {
           // Initialize the UI
-          UI.initialize();
+          $("#register-form-page").hide();
+          $("#player-match-overlay").hide();
 
+          $("#register-button").on("click", () => {
+            event.preventDefault(); 
+            $("#signin-form-page").hide();
+            $("#register-form-page").show();
+          }); 
+
+          $("#back-button").on("click", () => {
+            event.preventDefault(); 
+            $("#register-form-page").hide();
+            $("#signin-form-page").show();
+
+          }); 
+
+          $("#battle-button").on("click", () => {
+            event.preventDefault(); 
+            $("#signin-overlay").hide();
+            $("#player-match-overlay").show();
+
+          }); 
+
+          $("#match-back-button").on("click", () => {
+            event.preventDefault(); 
+            $("#player-match-overlay").hide();
+            $("#signin-overlay").show();
+          }); 
+
+          $("#start-game-button").on("click", () => {
+            // need to also check both players are matched --> if not cannot start game !
+            event.preventDefault(); 
+            $("#player-match-overlay").hide();
+          }); 
+
+
+
+
+
+          // UI.initialize();
           //later implement if log in successful --> hife the signin-overlay div 
       }); 
     </script>
