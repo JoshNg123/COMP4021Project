@@ -94,11 +94,46 @@
               <div id="player-list">
               </div>
             </div>
-            <div id="user-match-text">You are currently matched with: User1</div>
             <div class="spacer-0"></div>
             <div class="spacer-0"></div>
             <button class="button" id="match-back-button">Sign Out</button>
-            <button class="button" id="start-game-button">Start Game!</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="accept-challenge-overlay" class="rectangle">
+        <div id="title">Battlefield Blitz</div>
+        <div class="container">
+          <div class="item" id="accept-match-box">
+            <div id="accept-challenge-text"></div>
+            <div class="spacer-0"></div>
+            <div class="spacer-0"></div>
+            <div id="choosing-buttons">
+              <button class="button" id="accept-challenge-button">Accept</button>
+              <button class="button" id="reject-challenge-button">Reject</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="waiting-for-opponent-overlay" class="rectangle">
+        <div id="title"> Battlefield Blitz </div>
+        <div class="container">
+          <div class="item" id="waiting-for-opponent-box">
+            <div id="waiting-for-opponent-text"></div>
+            <div class="spacer-0"></div>
+            <div class="spacer-0"></div>
+            <!-- <div id="waiting-for-opponent-buttons"> Additional User Enhancement -->
+            <!-- <button class="button" id="cancel-match-button">Cancel</button> -->
+          </div>
+        </div>
+      </div>
+
+      <div id="countdown-overlay" class="rectangle">
+        <div id="title"> Battlefield Blitz </div>
+        <div class="container">
+          <div class="item" id="countdown-box">
+            <div id="countdown-text"></div>
           </div>
         </div>
       </div>
@@ -112,6 +147,7 @@
     <script src="./scripts/registration.js"></script>
     <script src="./scripts/authentication.js"></script>
     <script src="./scripts/socket.js"></script>
+    <script src="./scripts/game.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 

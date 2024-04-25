@@ -36,10 +36,41 @@ const Socket = (function () {
     // Set up the remove user event
     socket.on("remove user", (user) => {
       user = JSON.parse(user);
-
       // Remove the online user
       OnlinePlayersArea.removeUser(user);
     });
+
+    socket.on("match", (pairing) => {
+      pairing = JSON.parse(pairing);
+      AcceptChallengeModal.createModal(pairing);
+    });
+
+    socket.on("challenge accepted", (pairing) => {
+      pairing = JSON.parse(pairing);
+      AcceptChallengeModal.hide();
+      WaitingForOpponentModal.hide();
+      CountDown.start();
+    });
+
+    socket.on("challenge rejected", (pairing) => {
+      pairing = JSON.parse(pairing);
+      AcceptChallengeModal.hide();
+      WaitingForOpponentModal.hide();
+      CountDown.reject(pairing);
+      PlayerPanel.show();
+    });
+  };
+
+  const sendChallenge = function (player, opponent) {
+    socket.emit("challenge", JSON.stringify({ player, opponent }));
+  };
+
+  const acceptChallenge = function (pairing) {
+    socket.emit("accept challenge", JSON.stringify(pairing));
+  };
+
+  const rejectChallenge = function (pairing) {
+    socket.emit("reject challenge", JSON.stringify(pairing));
   };
 
   // This function disconnects the socket from the server
@@ -48,5 +79,12 @@ const Socket = (function () {
     socket = null;
   };
 
-  return { getSocket, connect, disconnect };
+  return {
+    getSocket,
+    connect,
+    disconnect,
+    sendChallenge,
+    acceptChallenge,
+    rejectChallenge,
+  };
 })();

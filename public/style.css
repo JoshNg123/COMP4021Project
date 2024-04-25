@@ -200,6 +200,77 @@ input[type="password"] {
   border-radius: 10px;
 }
 
+#accept-match-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#accept-challenge-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 854px;
+  height: 480px;
+}
+
+#accept-challenge-text {
+  font-family: "Jersey 25";
+  font-size: 30px;
+  color: black;
+}
+
+#choosing-buttons {
+  display: flex; /* Add this line to make buttons appear in a row */
+  justify-content: center;
+  align-items: center;
+}
+
+#waiting-for-opponent-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 854px;
+  height: 480px;
+}
+
+#waiting-for-opponent-text {
+  font-family: "Jersey 25";
+  font-size: 30px;
+  color: black;
+}
+
+#waiting-for-opponent-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#countdown-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 854px;
+  height: 480px;
+}
+
+#countdown-text {
+  font-family: "Jersey 25";
+  font-size: 30px;
+  color: black;
+}
+
+#countdown-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* CSS */
 .online-player-button {
   background: #fff;

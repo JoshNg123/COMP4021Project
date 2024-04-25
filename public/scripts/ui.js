@@ -49,8 +49,6 @@ const SignInForm = (function () {
       const username = $("#signin-username").val().trim();
       const password = $("#signin-password").val().trim();
 
-      console.log(username, password);
-
       // Send a signin request
       Authentication.signin(
         username,
@@ -125,7 +123,6 @@ const OnlinePlayersArea = (function () {
   };
 
   const update = function (users) {
-    $("#player-list").empty();
     const currentUser = Authentication.getUser();
 
     for (const username in users) {
@@ -136,21 +133,20 @@ const OnlinePlayersArea = (function () {
         $("#player-list").append(userElement);
       }
     }
+    listenForChallenges();
   };
 
-  // const addUser = function (user) {
-  //   console.log("Adding User");
-  //   console.log(user);
-  //   const onlinePlayersArea = $("#player-list");
-  //   const userElement = $(`<div>${user.username}</div>`);
-  //   console.log(userElement);
-  //   onlinePlayersArea.append(userElement); // Use append() instead of text()
-  //   console.log("Adding User");
-  //   $("#player-list").append(`<p>${user.username}</p>`);
-  // };
+  const listenForChallenges = () => {
+    $(".online-player-button").on("click", function () {
+      const player = Authentication.getUser().username;
+      const opponent = $(this).text();
+      Socket.sendChallenge(player, opponent);
+      PlayerPanel.hide();
+      WaitingForOpponentModal.createModal(opponent);
+    });
+  };
 
   const removeUser = function (user) {
-    console.log(user);
     const onlinePlayersArea = $("#player-list");
     onlinePlayersArea.find(`button:contains(${user.username})`).remove();
   };
@@ -158,9 +154,115 @@ const OnlinePlayersArea = (function () {
   return { initialize, update, removeUser };
 })();
 
+const AcceptChallengeModal = (function () {
+  const initialize = function () {
+    $("#accept-challenge-overlay").hide();
+  };
+
+  const createModal = function (pairing) {
+    PlayerPanel.hide();
+    $("#accept-challenge-overlay").show();
+    const text = `<p>You have been challenged by ${pairing.player}</p>
+    <p>Do you accept the challenge?</p>`;
+    $("#accept-challenge-text").append(text);
+
+    $("#accept-challenge-button").on("click", () => {
+      Socket.acceptChallenge(pairing);
+    });
+
+    $("#reject-challenge-button").on("click", () => {
+      Socket.rejectChallenge(pairing);
+    });
+  };
+
+  const hide = function () {
+    $("#accept-challenge-overlay").hide();
+    $("#accept-challenge-text").empty();
+  };
+
+  return { initialize, createModal, hide };
+})();
+
+const WaitingForOpponentModal = (function () {
+  const initialize = function () {
+    $("#waiting-for-opponent-overlay").hide();
+  };
+
+  const createModal = function (opponent) {
+    $("#waiting-for-opponent-overlay").show();
+    const text = `<p>Waiting for ${opponent} to accept the challenge...</p>`;
+    $("#waiting-for-opponent-text").append(text);
+  };
+
+  const hide = function () {
+    $("#waiting-for-opponent-overlay").hide();
+    $("#waiting-for-opponent-text").empty();
+  };
+
+  return { initialize, createModal, hide };
+})();
+
+const CountDown = (function () {
+  const initialize = function () {
+    $("#countdown-overlay").hide();
+  };
+
+  const start = function () {
+    $("#countdown-overlay").show();
+    let count = 5;
+    $("#countdown-text").empty();
+    const text = `The game will start in ${count} seconds. Remember that Josiah loves Natcha and she is the prettiest cutest girl everr!!`;
+    $("#countdown-text").append(text);
+
+    const interval = setInterval(() => {
+      count--;
+      $("#countdown-text").empty();
+      const text = `The game will start in ${count} seconds. Remember that Josiah loves Natcha and she is the prettiest cutest girl everr!!`;
+      $("#countdown-text").append(text);
+      if (count === 0) {
+        clearInterval(interval);
+        $("#countdown-overlay").hide();
+        Game.start();
+      }
+    }, 1000);
+  };
+
+  const reject = function (pairing) {
+    $("#countdown-overlay").show();
+    let count = 2;
+    let text = "";
+    $("#countdown-text").empty();
+    if (Authentication.getUser().username === pairing.player) {
+      text = `<p> Your challenge to ${pairing.opponent} was rejected. </p> <p> Returning to the player panel... </p>`;
+      $("#countdown-text").append(text);
+    } else {
+      text = `You rejected the challenge from ${pairing.player}. <p> Returning to the player panel...</p>`;
+      $("#countdown-text").append(text);
+    }
+
+    const interval = setInterval(() => {
+      count--;
+      if (count === 0) {
+        clearInterval(interval);
+        $("#countdown-overlay").hide();
+        PlayerPanel.show();
+      }
+    }, 1000);
+  };
+
+  return { initialize, start, reject };
+})();
+
 const UI = (function () {
   // The components of the UI are put here
-  const components = [SignInForm, PlayerPanel, OnlinePlayersArea];
+  const components = [
+    SignInForm,
+    PlayerPanel,
+    OnlinePlayersArea,
+    AcceptChallengeModal,
+    WaitingForOpponentModal,
+    CountDown,
+  ];
 
   // This function initializes the UI
   const initialize = () => {
