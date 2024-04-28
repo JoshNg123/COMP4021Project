@@ -49,7 +49,7 @@ const Socket = (function () {
       pairing = JSON.parse(pairing);
       AcceptChallengeModal.hide();
       WaitingForOpponentModal.hide();
-      CountDown.start();
+      CountDown.start(pairing);
     });
 
     socket.on("challenge rejected", (pairing) => {
@@ -59,6 +59,18 @@ const Socket = (function () {
       CountDown.reject(pairing);
       PlayerPanel.show();
     });
+
+    socket.on("pressed_key down", (key_info) =>{
+      const {pressed_key, pressed_player} = JSON.parse(key_info); 
+      Game.move_player(pressed_key, pressed_player); 
+    })
+
+    socket.on("pressed_key up", (key_info) =>{
+      const {pressed_key, pressed_player} = JSON.parse(key_info); 
+      Game.stop_player(pressed_key, pressed_player); 
+    })
+
+
   };
 
   const sendChallenge = function (player, opponent) {
@@ -79,6 +91,18 @@ const Socket = (function () {
     socket = null;
   };
 
+  //This function send keypress information to the server 
+  const sendKeyInfoDown = function (pressed_key, pressed_player, opponent, player){
+      socket.emit("keypress info down", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
+  }; 
+
+  //This function send keypress information to the server 
+  const sendKeyInfoUp = function (pressed_key, pressed_player, opponent, player){
+    socket.emit("keypress info up", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
+  }; 
+
+
+
   return {
     getSocket,
     connect,
@@ -86,5 +110,7 @@ const Socket = (function () {
     sendChallenge,
     acceptChallenge,
     rejectChallenge,
+    sendKeyInfoDown,
+    sendKeyInfoUp,
   };
 })();

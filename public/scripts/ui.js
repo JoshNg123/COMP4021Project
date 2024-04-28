@@ -207,7 +207,7 @@ const CountDown = (function () {
     $("#countdown-overlay").hide();
   };
 
-  const start = function () {
+  const start = function (pairing) {
     $("#countdown-overlay").show();
     let count = 5;
     $("#countdown-text").empty();
@@ -222,7 +222,7 @@ const CountDown = (function () {
       if (count === 0) {
         clearInterval(interval);
         $("#countdown-overlay").hide();
-        Game.start();
+        Game.start(pairing);
       }
     }, 1000);
   };

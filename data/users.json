@@ -1,4 +1,12 @@
 {
+ "1": {
+  "hash": "$2b$10$0cs5gTuLvhlImaKEtBnQ9.iSc1OOB6W1cL7zO75iTtGG6xGwADIse",
+  "victories": 0
+ },
+ "2": {
+  "hash": "$2b$10$GYiOY./iUqyHn/y5s2sS.uDhw2V9zEgtCWOnZmqrAiL9bW3xR2Orm",
+  "victories": 0
+ },
  "Josh1": {
   "hash": "$2b$10$PEk0gHBOodV1Pkz8jLCG3OyUORn7I0aqDVowpE77PDA/uiYkhp6Ma",
   "victories": 0
@@ -9,6 +17,14 @@
  },
  "Josh": {
   "hash": "$2b$10$DEuemru5rB8tmSV/J.XzI.anWopKZzRgvF/qblkqksBJCjmb8OdJe",
+  "victories": 0
+ },
+ "Natcha": {
+  "hash": "$2b$10$oZP1ylokOu2mC1P2ZsmyqO75HQvZ7M2LFTtOrZ.Ol3crd15IqiUuO",
+  "victories": 0
+ },
+ "Josiah": {
+  "hash": "$2b$10$wQ8fFczZchjHwyiXXCJdI.jl8ajKxIh.IJTm6kLNcMXPBLRPw7Ezu",
   "victories": 0
  }
 }

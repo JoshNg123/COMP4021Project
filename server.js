@@ -92,4 +92,19 @@ io.on("connection", (socket) => {
       JSON.stringify(pairing)
     );
   });
+
+  socket.on("keypress info down", (info) => {
+    const { pressed_key, pressed_player, opponent, player } = JSON.parse(info);
+    sockets[player].socket.emit("pressed_key down", JSON.stringify({pressed_key, pressed_player})); 
+    sockets[opponent].socket.emit("pressed_key down", JSON.stringify({pressed_key, pressed_player})); 
+
+  });
+
+  socket.on("keypress info up", (info) => {
+    const { pressed_key, pressed_player, opponent, player } = JSON.parse(info);
+    sockets[player].socket.emit("pressed_key up", JSON.stringify({pressed_key, pressed_player})); 
+    sockets[opponent].socket.emit("pressed_key up", JSON.stringify({pressed_key, pressed_player})); 
+
+  });
+
 });
