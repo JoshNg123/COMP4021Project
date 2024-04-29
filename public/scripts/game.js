@@ -121,14 +121,42 @@ const Game = (function () {
             break; 
         case 39: 
             player2.stop(3);
-            break; 
-        case 32:
-            player2.slowDown(); 
-            break; 
+            break;  
       }
     }
-    requestAnimationFrame(doFrame);
+    //requestAnimationFrame(doFrame);
 
   }
-  return { start, move_player, stop_player};
+
+  let bombTimerId1 = null;
+  let bombTimerId2 = null;
+
+
+  const shoot = (pressed_player, opponent, player) =>{
+    if (pressed_player === "player1" && !bombTimerId1) {
+      let { x, y } = player1.getPos();
+      y = y + 50
+      const bomb = Bomb(context, x, y, gameArea);
+      bombs.push(bomb);
+      bomb.move(1);
+      
+      bombTimerId1 = setTimeout(() => {
+        bombTimerId1 = null;
+      }, 2000); // Set the desired time frame (2 seconds in this example)
+    }
+    else if (pressed_player === "player2" && !bombTimerId2){
+        let {x, y} = player2.getPos(); 
+        y = y - 50; 
+        const bomb = Bomb(context, x, y, gameArea); 
+        bombs.push(bomb)
+        bomb.move(2); 
+
+        bombTimerId2 = setTimeout(() => {
+          bombTimerId2 = null;
+        }, 2000); // Set the desired time frame (2 seconds in this example)
+    }
+  }
+
+  return { start, move_player, stop_player, shoot};
+  
 })();
