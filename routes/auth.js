@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 
+let activePlayers = [];
+
 // This helper function checks whether the text only contains word characters
 function containWordCharsOnly(text) {
   return /^\w+$/.test(text);
@@ -55,8 +57,13 @@ router.post("/signin", (req, res) => {
     return;
   }
 
-  const { name } = users[username];
+  if(activePlayers.includes(username)) {
+    res.json({ status: "error", error: "User is already signed in." });
+    return;
+  }
+
   req.session.user = { username };
+  activePlayers.push(username);
 
   res.json({
     status: "success",
@@ -80,7 +87,9 @@ router.get("/signout", (req, res) => {
   // Deleting req.session.user
   //
   delete req.session.user;
-
+  activePlayers = activePlayers.filter(
+    (player) => player !== req.session.user.username
+  );
   //
   // Sending a success response
   //

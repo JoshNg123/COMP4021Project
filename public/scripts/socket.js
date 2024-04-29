@@ -109,8 +109,6 @@ const Socket = (function () {
     socket.emit("shoot info", JSON.stringify({pressed_player, opponent, player})); 
   }; 
 
-
-
   return {
     getSocket,
     connect,
