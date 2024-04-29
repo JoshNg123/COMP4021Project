@@ -129,7 +129,7 @@ const Sprite = function(ctx, x, y) {
     };
 
     // This function draws the sprite.
-    const drawSprite = function(name) {
+    const drawSpritePlayer = function(name) {
         /* Save the settings */
         ctx.save();
 
@@ -158,12 +158,42 @@ const Sprite = function(ctx, x, y) {
         /* Restore saved settings */
         ctx.restore();
     };
+
+    const drawSpriteObject = function() {
+        /* Save the settings */
+        ctx.save();
+
+        /* Get the display size of the sprite */
+        const size = getDisplaySize();
+
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(
+            sheet,
+            sequence.x + index * sequence.width,
+            sequence.y,
+            sequence.width, 
+            sequence.height,
+            parseInt(x - size.width / 2), 
+            parseInt(y - size.height / 2),
+            size.width, 
+            size.height    
+        );
+
+    };
      
     // This function draws the shadow and the sprite.
-    const draw = function(name) {
+    const drawObject = function() {
         if (isReady()) {
             drawShadow();
-            drawSprite(name);
+            drawSpriteObject();
+        }
+        return this;
+    };
+
+    const drawPlayer = function(name) {
+        if (isReady()) {
+            drawShadow();
+            drawSpritePlayer(name);
         }
         return this;
     };
@@ -203,7 +233,8 @@ const Sprite = function(ctx, x, y) {
         getDisplaySize: getDisplaySize,
         getBoundingBox: getBoundingBox,
         isReady: isReady,
-        draw: draw,
+        drawPlayer: drawPlayer,
+        drawObject: drawObject, 
         update: update
     };
 };

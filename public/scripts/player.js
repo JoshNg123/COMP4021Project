@@ -112,7 +112,8 @@ const Player = function(ctx, x, y, gameArea) {
         speedUp: speedUp,
         slowDown: slowDown,
         getBoundingBox: sprite.getBoundingBox,
-        draw: sprite.draw,
+        draw: sprite.drawPlayer,
         update: update, 
+        getPos: sprite.getXY, 
     };
 };

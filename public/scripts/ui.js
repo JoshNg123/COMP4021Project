@@ -211,13 +211,13 @@ const CountDown = (function () {
     $("#countdown-overlay").show();
     let count = 5;
     $("#countdown-text").empty();
-    const text = `The game will start in ${count} seconds. Remember that Josiah loves Natcha and she is the prettiest cutest girl everr!!`;
+    const text = `The game will start in ${count} seconds.`;
     $("#countdown-text").append(text);
 
     const interval = setInterval(() => {
       count--;
       $("#countdown-text").empty();
-      const text = `The game will start in ${count} seconds. Remember that Josiah loves Natcha and she is the prettiest cutest girl everr!!`;
+      const text = `The game will start in ${count} seconds. `;
       $("#countdown-text").append(text);
       if (count === 0) {
         clearInterval(interval);
