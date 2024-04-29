@@ -86,10 +86,10 @@ router.get("/signout", (req, res) => {
   //
   // Deleting req.session.user
   //
-  delete req.session.user;
   activePlayers = activePlayers.filter(
     (player) => player !== req.session.user.username
   );
+ delete req.session.user;
   //
   // Sending a success response
   //
