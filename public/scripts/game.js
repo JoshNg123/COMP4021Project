@@ -75,7 +75,7 @@ const Game = (function () {
             break; 
       }
     }
-    requestAnimationFrame(doFrame);
+    // requestAnimationFrame(doFrame);
 
   }
 
@@ -107,7 +107,7 @@ const Game = (function () {
             break; 
       }
     }
-    requestAnimationFrame(doFrame);
+    // requestAnimationFrame(doFrame);
 
   }
   return { start, move_player, stop_player};
