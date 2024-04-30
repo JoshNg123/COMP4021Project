@@ -19,10 +19,17 @@ const Game = (function () {
     player2 = Player(context, 427, 410, gameArea);
     const playername = Authentication.getUser().username;
     const { opponent, player } = pairing;
+    //use this heart
+    const heart1 = Heart(context, 300, 210); 
+    const heart2 = Heart(context, 300, 210); 
+
 
     function doFrame(now) {
       player1.update(now);
       player2.update(now);
+      //to do: update the player's life and display on screen the number of hearts 
+      //player1.get_life()
+      //player2.get_life()
 
       for (let i = 0; i < bombs.length; i++) {
         bombs[i].update(now);
@@ -33,6 +40,7 @@ const Game = (function () {
           // Decrement `i` to account for the removed element
           i--;
           delete bombs[i];
+          player1.decrease_life(); 
         }
         if (player1.getBoundingBox().isPointInBox(x, y)) {
           bombs.splice(i, 1);
@@ -44,6 +52,7 @@ const Game = (function () {
           // Decrement `i` to account for the removed element
           i--;
           delete bombs[i];
+          player2.decrease_life(); 
         }
       }
       context.clearRect(0, 0, cv.width, cv.height);

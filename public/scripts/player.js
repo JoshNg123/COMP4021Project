@@ -42,6 +42,22 @@ const Player = function(ctx, x, y, gameArea) {
     // This is the moving speed (pixels per second) of the player
     let speed = 150;
 
+    let life = 5; 
+
+    const get_life = function(){
+        return life; 
+    }
+
+    //this function increments the player's life 
+    const increase_life = function (){
+        life++; 
+    }
+
+    //this function decrements the player's life 
+    const decrease_life = function(){
+        life--; 
+    }
+
     // This function sets the player's moving direction.
     // - `dir` - the moving direction (1: Left, 2: Up, 3: Right, 4: Down)
     const move = function(dir) {
@@ -115,5 +131,8 @@ const Player = function(ctx, x, y, gameArea) {
         draw: sprite.drawPlayer,
         update: update, 
         getPos: sprite.getXY, 
+        increase_life: increase_life,
+        decrease_life: decrease_life,
+        get_life: get_life, 
     };
 };
