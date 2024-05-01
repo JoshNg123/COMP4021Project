@@ -9,6 +9,8 @@ const Game = (function () {
   let canMovePlayer = true;
   let canShootOpponent = true;
   let canShootPlayer = true;
+  let heartarr1 = []; 
+  let heartarr2 = []; 
 
   const start = (pairing) => {
     // Initialize the game
@@ -20,9 +22,19 @@ const Game = (function () {
     const playername = Authentication.getUser().username;
     const { opponent, player } = pairing;
     //use this heart
-    const heart1 = Heart(context, 300, 210); 
-    const heart2 = Heart(context, 300, 210); 
+    for (let i =0; i < player1.get_life(); i++){
+      let index = i*20; 
+      heartarr1[i] = Heart(context, 20 + index, 20, gameArea); 
+    }
+    for (let i = 0; i < player2.get_life(); i++){
+      let index = i*20; 
+      heartarr2[i] = Heart(context, 20 + index, 450, gameArea); 
+    }
 
+    // const heart1 = Heart(context, 20, 20, gameArea); 
+    // const heart2 = Heart(context, 20, 440, gameArea); 
+    // heart1.draw(); 
+    // heart2.draw(); 
 
     function doFrame(now) {
       player1.update(now);
@@ -30,6 +42,13 @@ const Game = (function () {
       //to do: update the player's life and display on screen the number of hearts 
       //player1.get_life()
       //player2.get_life()
+      for (let i =0; i < heartarr1.length; i++){
+        heartarr1[i].update(now)
+      } 
+
+      for (let i =0; i < heartarr2.length; i++){
+        heartarr2[i].update(now)
+      }
 
       for (let i = 0; i < bombs.length; i++) {
         bombs[i].update(now);
@@ -40,13 +59,13 @@ const Game = (function () {
           // Decrement `i` to account for the removed element
           i--;
           delete bombs[i];
-          player1.decrease_life(); 
         }
         if (player1.getBoundingBox().isPointInBox(x, y)) {
           bombs.splice(i, 1);
           // Decrement `i` to account for the removed element
           i--;
           delete bombs[i];
+          player1.decrease_life(); 
         } else if (player2.getBoundingBox().isPointInBox(x, y)) {
           bombs.splice(i, 1);
           // Decrement `i` to account for the removed element
@@ -59,6 +78,19 @@ const Game = (function () {
 
       player1.draw(opponent);
       player2.draw(player);
+
+      for (let i =0; i < player1.get_life(); i++){
+        heartarr1[i].draw(); 
+
+      }
+
+      for (let i =0; i < player2.get_life(); i++){
+        heartarr2[i].draw(); 
+
+      }
+      //heart2.draw(player2.get_life()); 
+      // heart1.draw(player1.get_life()); 
+      // heart1.draw(player1.get_life()); 
 
       for (let i = 0; i < bombs.length; i++) {
         bombs[i].draw();
