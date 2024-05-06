@@ -39,7 +39,7 @@ const Bomb = function (ctx, x, y, gameArea) {
 
   let direction = 0;
 
-  let speed = 300;
+  let speed = 1000;
 
   const move = function (dir) {
     if (dir >= 1 && dir <= 4 && dir != direction) {

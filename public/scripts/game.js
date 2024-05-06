@@ -11,6 +11,8 @@ const Game = (function () {
   let canShootPlayer = true;
   let heartarr1 = []; 
   let heartarr2 = []; 
+  const totalGameTime = 180; 
+  let gameStartTime = 0; 
 
   const start = (pairing) => {
     // Initialize the game
@@ -31,17 +33,14 @@ const Game = (function () {
       heartarr2[i] = Heart(context, 20 + index, 450, gameArea); 
     }
 
-    // const heart1 = Heart(context, 20, 20, gameArea); 
-    // const heart2 = Heart(context, 20, 440, gameArea); 
-    // heart1.draw(); 
-    // heart2.draw(); 
+
 
     function doFrame(now) {
+
+
       player1.update(now);
       player2.update(now);
-      //to do: update the player's life and display on screen the number of hearts 
-      //player1.get_life()
-      //player2.get_life()
+
       for (let i =0; i < heartarr1.length; i++){
         heartarr1[i].update(now)
       } 
@@ -75,6 +74,24 @@ const Game = (function () {
         }
       }
       context.clearRect(0, 0, cv.width, cv.height);
+
+      if (gameStartTime == 0) gameStartTime = now;
+      /* Update the time remaining */
+      const gameTimeSoFar = now - gameStartTime;
+      const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+
+      context.fillStyle = "white";
+      context.font = "20px 'Comic Sans MS'";
+      context.fillText("Battle Ends In", 680, 40);
+      context.fillStyle = "white";
+      context.font = "30px 'Comic Sans MS'";
+      context.fillText(timeRemaining, 720, 70);
+
+      if (timeRemaining <= 0 || player1.get_life() == 0 || player2.get_life() == 0){
+        $("#gameover-overlay").show(); 
+        context.clearRect(0, 0, cv.width, cv.height);
+        return; 
+      }
 
       player1.draw(opponent);
       player2.draw(player);
