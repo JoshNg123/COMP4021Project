@@ -1,4 +1,7 @@
-const Bomb = function (ctx, x, y, gameArea) {
+const Bomb = function (ctx, x, y, pressed_player) {
+
+  this.player = pressed_player; 
+
   const sequences = {
     bomb: {
       x: 64,

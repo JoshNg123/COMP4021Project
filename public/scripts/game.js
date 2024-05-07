@@ -13,6 +13,7 @@ const Game = (function () {
   let heartarr2 = []; 
   const totalGameTime = 180; 
   let gameStartTime = 0; 
+  let heartMaxAge = 10000; 
 
   const start = (pairing) => {
     // Initialize the game
@@ -21,9 +22,11 @@ const Game = (function () {
     gameArea = BoundingBox(context, 200, 60, 420, 800);
     player1 = Player(context, 427, 210, gameArea);
     player2 = Player(context, 427, 410, gameArea);
+    let moving_heart = Moving_Heart(context, 300, 300, gameArea); 
     const playername = Authentication.getUser().username;
     const { opponent, player } = pairing;
-    //use this heart
+    
+    //initialize the heart array
     for (let i =0; i < player1.get_life(); i++){
       let index = i*20; 
       heartarr1[i] = Heart(context, 20 + index, 20, gameArea); 
@@ -34,12 +37,13 @@ const Game = (function () {
     }
 
 
-
     function doFrame(now) {
 
 
+      //do all the object updates here
       player1.update(now);
       player2.update(now);
+      moving_heart.update(now); 
 
       for (let i =0; i < heartarr1.length; i++){
         heartarr1[i].update(now)
@@ -71,8 +75,26 @@ const Game = (function () {
           i--;
           delete bombs[i];
           player2.decrease_life(); 
+        } else if (moving_heart.getBoundingBox().isPointInBox(x, y)){
+          const hit_player = bombs.player
+          bombs.splice(i, 1);
+          i--;
+          delete bombs[i];
+          if (hit_player == "player1" || player1.get_life() < 5){
+            
+            player1.increase_life(); 
+          }
+          else if (hit_player == "player2" || player2.get_life() < 5){
+            player2.increase_life(); 
+          }
         }
       }
+
+      if (moving_heart.getAge(now) > heartMaxAge){
+        moving_heart.randomize(gameArea); 
+      }
+
+
       context.clearRect(0, 0, cv.width, cv.height);
 
       if (gameStartTime == 0) gameStartTime = now;
@@ -93,8 +115,10 @@ const Game = (function () {
         return; 
       }
 
+      //do all the drawings here 
       player1.draw(opponent);
       player2.draw(player);
+      moving_heart.draw(); 
 
       for (let i =0; i < player1.get_life(); i++){
         heartarr1[i].draw(); 
@@ -105,14 +129,13 @@ const Game = (function () {
         heartarr2[i].draw(); 
 
       }
-      //heart2.draw(player2.get_life()); 
-      // heart1.draw(player1.get_life()); 
-      // heart1.draw(player1.get_life()); 
+
 
       for (let i = 0; i < bombs.length; i++) {
         bombs[i].draw();
       }
 
+      //all the event listeners here
       $(document).on("keydown", function (event) {
         pressed_key = event.keyCode;
         if (playername == opponent && canMoveOpponent) {
@@ -214,13 +237,13 @@ const Game = (function () {
     if (pressed_player === "player1") {
       let { x, y } = player1.getPos();
       y = y + 50;
-      const bomb = Bomb(context, x, y, gameArea);
+      const bomb = Bomb(context, x, y, pressed_player);
       bombs.push(bomb);
       bomb.move(1);
     } else if (pressed_player === "player2") {
       let { x, y } = player2.getPos();
       y = y - 50;
-      const bomb = Bomb(context, x, y, gameArea);
+      const bomb = Bomb(context, x, y, pressed_player);
       bombs.push(bomb);
       bomb.move(2);
     }
