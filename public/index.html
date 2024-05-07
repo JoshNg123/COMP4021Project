@@ -142,8 +142,29 @@
       <div id="gameover-overlay" class="rectangle">
         <div id="title"> Battlefield Blitz </div>
         <div class="container">
-          <div class="item" id="countdown-box">
-            <div id="countdown-text"></div>
+          <div class="item" id="winner-box">
+            <div id = "congrats">Congratulations!</div>
+            <img src = "./assets/trophy.png" id = "trophyimg" height="150" width="150">
+            <div id = "winner">  </div>
+            <div id = "loser"> </div>
+
+            <button class="button" id="match-back-button">Replay!</button>
+            <button class="button" id="match-back-button">Sign Out</button>
+
+            
+          </div>
+          <div class="item" id="leaderboard">
+            <div id = "box-title">Leaderboard</div>
+
+            <div class="leaderboard">
+              <ol id="leaderboard-list">
+                <!-- The leaderboard entries will be dynamically added here -->
+              </ol>
+            </div>
+
+  
+              
+            <div id="leaderboard"></div>
           </div>
         </div>
       </div>

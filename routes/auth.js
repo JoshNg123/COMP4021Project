@@ -96,4 +96,11 @@ router.get("/signout", (req, res) => {
   res.json({ status: "success" });
 });
 
+router.get("/getusers", (req, res) => {
+  const data = JSON.parse(fs.readFileSync("data/users.json"));
+
+  res.json({ users: data, status: "success" });
+});
+
+
 module.exports = router;

@@ -254,6 +254,84 @@ const CountDown = (function () {
   return { initialize, start, reject };
 })();
 
+const gameOver = (function () {
+
+  const showGameOver = async function(opponent, player, player1, player2){
+    try {
+      const result = await fetch("/getusers", {
+        method: "GET",
+      });
+      const response = await result.json();
+  
+      if (response.status === "success") {
+        users = response.users;
+        console.log(users); 
+
+      } else if (response.status === "error") {
+        if (onError) {
+          onError(response.error);
+        }
+      }
+    } catch (error) {
+      console.log('Error retrieving data:', error);
+    }
+
+    $("#gameover-overlay").show();
+    if (player1.get_life() > player2.get_life()){
+      $("#winner").text(opponent);
+      const msg = "Battled with: " + player; 
+      $("#loser").text(msg);
+
+    }
+    else if (player1.get_life() < player2.get_life()){
+      $("#winner").text(player);
+      const msg = "Battled with: " + opponent; 
+      $("#loser").text(msg);
+    }
+    else{
+      $("#winner").text("Tie");
+      $("#loser").text("Nice Game!");
+    }
+
+
+    // Convert the users object keys into an array
+    const userKeys = Object.keys(users);
+
+    // Sort the user keys based on the corresponding victory counts in descending order
+    userKeys.sort((a, b) => users[b].victories - users[a].victories);
+
+    // Get the leaderboard list element
+    const leaderboardList = document.getElementById('leaderboard-list');
+
+    // Define the limit for the number of players to display
+    const limit = 5;
+
+    // Iterate over the sorted user keys array up to the defined limit
+    for (let i = 0; i < Math.min(limit, userKeys.length); i++) {
+      const userKey = userKeys[i];
+      const user = users[userKey];
+
+      const listItem = document.createElement('li');
+
+      const playerName = document.createElement('span');
+      playerName.className = 'player-name';
+      playerName.textContent = userKey;
+
+      const playerScore = document.createElement('span');
+      playerScore.className = 'player-score';
+      playerScore.textContent = user.victories;
+
+      listItem.appendChild(playerName);
+      listItem.appendChild(playerScore);
+
+      leaderboardList.appendChild(listItem);
+    }
+
+  }
+  return {showGameOver};
+
+})();
+
 const UI = (function () {
   // The components of the UI are put here
   const components = [

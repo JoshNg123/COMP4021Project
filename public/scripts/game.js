@@ -235,7 +235,7 @@ const Game = (function () {
         player1.get_life() == 0 ||
         player2.get_life() == 0
       ) {
-        $("#gameover-overlay").show();
+        gameOver.showGameOver(opponent, player, player1, player2); 
         context.clearRect(0, 0, cv.width, cv.height);
         return;
       }
