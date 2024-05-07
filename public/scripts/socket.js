@@ -60,20 +60,23 @@ const Socket = (function () {
       PlayerPanel.show();
     });
 
-    socket.on("pressed_key down", (key_info) =>{
-      const {pressed_key, pressed_player, opponent, player} = JSON.parse(key_info); 
-      Game.move_player(pressed_key, pressed_player, opponent, player); 
-    })
+    socket.on("pressed_key down", (key_info) => {
+      const { pressed_key, pressed_player, opponent, player } =
+        JSON.parse(key_info);
+      console.log("pressed_key down", key_info);
+      Game.move_player(pressed_key, pressed_player, opponent, player);
+    });
 
-    socket.on("pressed_key up", (key_info) =>{
-      const {pressed_key, pressed_player, opponent, player} = JSON.parse(key_info); 
-      Game.stop_player(pressed_key, pressed_player, opponent, player); 
-    })
+    socket.on("pressed_key up", (key_info) => {
+      const { pressed_key, pressed_player, opponent, player } =
+        JSON.parse(key_info);
+      Game.stop_player(pressed_key, pressed_player, opponent, player);
+    });
 
     socket.on("shooting", (shoot_info) => {
-      const {pressed_player, opponent, player} = JSON.parse(shoot_info); 
-      Game.shoot(pressed_player, opponent, player); 
-    })
+      const { pressed_player, opponent, player } = JSON.parse(shoot_info);
+      Game.shoot(pressed_player, opponent, player);
+    });
   };
 
   const sendChallenge = function (player, opponent) {
@@ -94,20 +97,39 @@ const Socket = (function () {
     socket = null;
   };
 
-  //This function send keydown information to the server 
-  const sendKeyInfoDown = function (pressed_key, pressed_player, opponent, player){
-      socket.emit("keypress info down", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
-  }; 
+  //This function send keydown information to the server
+  const sendKeyInfoDown = function (
+    pressed_key,
+    pressed_player,
+    opponent,
+    player
+  ) {
+    socket.emit(
+      "keypress info down",
+      JSON.stringify({ pressed_key, pressed_player, opponent, player })
+    );
+  };
 
-  //This function send keyup information to the server 
-  const sendKeyInfoUp = function (pressed_key, pressed_player, opponent, player){
-    socket.emit("keypress info up", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
-  }; 
+  //This function send keyup information to the server
+  const sendKeyInfoUp = function (
+    pressed_key,
+    pressed_player,
+    opponent,
+    player
+  ) {
+    socket.emit(
+      "keypress info up",
+      JSON.stringify({ pressed_key, pressed_player, opponent, player })
+    );
+  };
 
-  //This function sends information to server that a player shoots 
-  const shoot = function (pressed_player, opponent, player){
-    socket.emit("shoot info", JSON.stringify({pressed_player, opponent, player})); 
-  }; 
+  //This function sends information to server that a player shoots
+  const shoot = function (pressed_player, opponent, player) {
+    socket.emit(
+      "shoot info",
+      JSON.stringify({ pressed_player, opponent, player })
+    );
+  };
 
   return {
     getSocket,
@@ -118,6 +140,6 @@ const Socket = (function () {
     rejectChallenge,
     sendKeyInfoDown,
     sendKeyInfoUp,
-    shoot, 
+    shoot,
   };
 })();

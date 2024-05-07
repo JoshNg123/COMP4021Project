@@ -1,56 +1,116 @@
 const Game = (function () {
+  // Note: This is always in the view of the person who sends the game request
   let player1;
   let player2;
+
   let context;
   let cv;
+
   let gameArea;
+
+  // Create an array of objects to store the bombs and who shot the bombs
   let bombs = [];
+
   let canMoveOpponent = true;
   let canMovePlayer = true;
+
   let canShootOpponent = true;
   let canShootPlayer = true;
-  let heartarr1 = []; 
-  let heartarr2 = []; 
-  const totalGameTime = 180; 
-  let gameStartTime = 0; 
-  let heartMaxAge = 10000; 
+
+  let heartarr1 = [];
+  let heartarr2 = [];
+
+  const totalGameTime = 180;
+
+  let gameStartTime = 0;
+
+  // Maximum age of the heart power-up in milliseconds
+  let heartMaxAge = 10000;
+  let movingHeartX = 300;
+  let movingHeartY = 300;
+  let heartExist = true;
+
+  // Freeze Power up variables
+  let freezeMaxAge = 12000;
+  let freezeExist = true;
+  let freezeX = 350;
+  let freezeY = 250;
+  let opponentfreeze = false;
+  let playerfreeze = false;
+
+  // Shoot variables
+  let shootFasterMaxAge = 6000;
+  let shootFasterX = 550;
+  let shootFasterY = 350;
+  let shootFasterExist = true;
+  let playerShootInterval = 2000;
+  let opponentShootInterval = 2000;
+  let playerShootIntervalID;
+  let opponentShootIntervalID;
 
   const start = (pairing) => {
     // Initialize the game
     cv = $("canvas").get(0);
     context = cv.getContext("2d");
+
+    // Initialize the game area
     gameArea = BoundingBox(context, 200, 60, 420, 800);
+
+    // Initialize the player objects
+    // Player 1 is always the opponent and at the top
+    // Player 2 is always the player and at the bottom
     player1 = Player(context, 427, 210, gameArea);
     player2 = Player(context, 427, 410, gameArea);
-    let moving_heart = Moving_Heart(context, 300, 300, gameArea); 
+
+    // Initialize the moving heart object
+    let moving_heart = Moving_Heart(
+      context,
+      movingHeartX,
+      movingHeartY,
+      gameArea
+    );
+
+    // Initialize the freeze object
+    let freeze = Freeze(context, freezeX, freezeY, gameArea);
+
+    // Initialize the shoot faster object
+    let shootFaster = ShootFaster(
+      context,
+      shootFasterX,
+      shootFasterY,
+      gameArea
+    );
+
     const playername = Authentication.getUser().username;
+
     const { opponent, player } = pairing;
-    
-    //initialize the heart array
-    for (let i =0; i < player1.get_life(); i++){
-      let index = i*20; 
-      heartarr1[i] = Heart(context, 20 + index, 20, gameArea); 
-    }
-    for (let i = 0; i < player2.get_life(); i++){
-      let index = i*20; 
-      heartarr2[i] = Heart(context, 20 + index, 450, gameArea); 
+
+    // Initialize the heart array for opponent
+    for (let i = 0; i < player1.get_life(); i++) {
+      let index = i * 20;
+      heartarr1[i] = Heart(context, 20 + index, 20, gameArea);
     }
 
+    // Initializze the heart array for player
+    for (let i = 0; i < player2.get_life(); i++) {
+      let index = i * 20;
+      heartarr2[i] = Heart(context, 20 + index, 450, gameArea);
+    }
 
     function doFrame(now) {
-
-
-      //do all the object updates here
+      //Do all the object updates here
       player1.update(now);
       player2.update(now);
-      moving_heart.update(now); 
+      moving_heart.update(now);
+      freeze.update(now);
+      shootFaster.update(now);
 
-      for (let i =0; i < heartarr1.length; i++){
-        heartarr1[i].update(now)
-      } 
+      for (let i = 0; i < heartarr1.length; i++) {
+        heartarr1[i].update(now);
+      }
 
-      for (let i =0; i < heartarr2.length; i++){
-        heartarr2[i].update(now)
+      for (let i = 0; i < heartarr2.length; i++) {
+        heartarr2[i].update(now);
       }
 
       for (let i = 0; i < bombs.length; i++) {
@@ -63,44 +123,105 @@ const Game = (function () {
           i--;
           delete bombs[i];
         }
+
         if (player1.getBoundingBox().isPointInBox(x, y)) {
           bombs.splice(i, 1);
           // Decrement `i` to account for the removed element
           i--;
           delete bombs[i];
-          player1.decrease_life(); 
+          player1.decrease_life();
         } else if (player2.getBoundingBox().isPointInBox(x, y)) {
           bombs.splice(i, 1);
           // Decrement `i` to account for the removed element
           i--;
           delete bombs[i];
-          player2.decrease_life(); 
-        } else if (moving_heart.getBoundingBox().isPointInBox(x, y)){
-          const hit_player = bombs.player
+          player2.decrease_life();
+        }
+
+        if (moving_heart.getBoundingBox().isPointInBox(x, y)) {
+          if (bombs[i].player == "player1" && player1.get_life() < 5) {
+            player1.increase_life();
+          } else if (bombs[i].player == "player2" && player2.get_life() < 5) {
+            player2.increase_life();
+          }
           bombs.splice(i, 1);
           i--;
           delete bombs[i];
-          if (hit_player == "player1" || player1.get_life() < 5){
-            
-            player1.increase_life(); 
+          heartExist = false;
+          context.clearRect(movingHeartX, movingHeartY, 16, 16);
+        }
+
+        if (freeze.getBoundingBox().isPointInBox(x, y)) {
+          if (bombs[i].player == "player1") {
+            playerfreeze = true;
+            setTimeout(() => {
+              playerfreeze = false;
+            }, 5000);
+          } else if (bombs[i].player == "player2") {
+            opponentfreeze = true;
+            setTimeout(() => {
+              opponentfreeze = false;
+            }, 5000);
           }
-          else if (hit_player == "player2" || player2.get_life() < 5){
-            player2.increase_life(); 
+          bombs.splice(i, 1);
+          i--;
+          delete bombs[i];
+          freezeExist = false;
+          context.clearRect(freezeX, freezeY, 16, 16);
+        }
+
+        if (shootFaster.getBoundingBox().isPointInBox(x, y)) {
+          if (bombs[i].player == "player1") {
+            clearTimeout(opponentShootIntervalID);
+            opponentShootInterval = 200;
+            setTimeout(() => {
+              opponentShootInterval = 2000;
+            }, 5000);
+          } else if (bombs[i].player == "player2") {
+            clearTimeout(playerShootIntervalID);
+            playerShootInterval = 200;
+            setTimeout(() => {
+              playerShootInterval = 2000;
+            }, 5000);
           }
+          bombs.splice(i, 1);
+          i--;
+          delete bombs[i];
+          shootFasterExist = false;
+          context.clearRect(shootFasterX, shootFasterY, 16, 16);
         }
       }
 
-      if (moving_heart.getAge(now) > heartMaxAge){
-        moving_heart.randomize(gameArea); 
+      if (moving_heart.getAge(now) > heartMaxAge) {
+        movingHeartLocation = moving_heart.randomize(gameArea);
+        movingHeartX = movingHeartLocation[0];
+        movingHeartY = movingHeartLocation[1];
+        heartExist = true;
       }
 
+      if (freeze.getAge(now) > freezeMaxAge) {
+        freezeLocation = freeze.randomize(gameArea);
+        freezeX = freezeLocation[0];
+        freezeY = freezeLocation[1];
+        freezeExist = true;
+      }
+
+      if (shootFaster.getAge(now) > shootFasterMaxAge) {
+        shootFasterLocation = shootFaster.randomize(gameArea);
+        shootFasterX = shootFasterLocation[0];
+        shootFasterY = shootFasterLocation[1];
+        shootFasterExist = true;
+      }
 
       context.clearRect(0, 0, cv.width, cv.height);
 
       if (gameStartTime == 0) gameStartTime = now;
+
       /* Update the time remaining */
       const gameTimeSoFar = now - gameStartTime;
-      const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+      const timeRemaining = Math.ceil(
+        (totalGameTime * 1000 - gameTimeSoFar) / 1000
+      );
 
       context.fillStyle = "white";
       context.font = "20px 'Comic Sans MS'";
@@ -109,27 +230,39 @@ const Game = (function () {
       context.font = "30px 'Comic Sans MS'";
       context.fillText(timeRemaining, 720, 70);
 
-      if (timeRemaining <= 0 || player1.get_life() == 0 || player2.get_life() == 0){
-        $("#gameover-overlay").show(); 
+      if (
+        timeRemaining <= 0 ||
+        player1.get_life() == 0 ||
+        player2.get_life() == 0
+      ) {
+        $("#gameover-overlay").show();
         context.clearRect(0, 0, cv.width, cv.height);
-        return; 
+        return;
       }
 
-      //do all the drawings here 
+      //Do all the drawings here
       player1.draw(opponent);
       player2.draw(player);
-      moving_heart.draw(); 
 
-      for (let i =0; i < player1.get_life(); i++){
-        heartarr1[i].draw(); 
-
+      if (heartExist) {
+        moving_heart.draw();
       }
 
-      for (let i =0; i < player2.get_life(); i++){
-        heartarr2[i].draw(); 
-
+      if (freezeExist) {
+        freeze.draw();
       }
 
+      if (shootFasterExist) {
+        shootFaster.draw();
+      }
+
+      for (let i = 0; i < player1.get_life(); i++) {
+        heartarr1[i].draw();
+      }
+
+      for (let i = 0; i < player2.get_life(); i++) {
+        heartarr2[i].draw();
+      }
 
       for (let i = 0; i < bombs.length; i++) {
         bombs[i].draw();
@@ -138,14 +271,15 @@ const Game = (function () {
       //all the event listeners here
       $(document).on("keydown", function (event) {
         pressed_key = event.keyCode;
-        if (playername == opponent && canMoveOpponent) {
+        if (playername == opponent && canMoveOpponent && !opponentfreeze) {
           Socket.sendKeyInfoDown(pressed_key, "player1", opponent, player);
           canMoveOpponent = false;
           setTimeout(() => {
             canMoveOpponent = true;
           }, 50);
         }
-        if (playername == player && canMovePlayer) {
+
+        if (playername == player && canMovePlayer && !playerfreeze) {
           Socket.sendKeyInfoDown(pressed_key, "player2", opponent, player);
           canMovePlayer = false;
           setTimeout(() => {
@@ -168,15 +302,15 @@ const Game = (function () {
           if (playername == opponent && canShootOpponent) {
             Socket.shoot("player1", opponent, player);
             canShootOpponent = false;
-            setTimeout(() => {
+            opponentShootIntervalID = setTimeout(() => {
               canShootOpponent = true;
-            }, 2000);
+            }, playerShootInterval);
           } else if (playername == player && canShootPlayer) {
             Socket.shoot("player2", opponent, player);
             canShootPlayer = false;
-            setTimeout(() => {
+            playerShootIntervalID = setTimeout(() => {
               canShootPlayer = true;
-            }, 2000);
+            }, playerShootInterval);
           }
         }
       });

@@ -3,7 +3,7 @@ const SignInForm = (function () {
   const initialize = function () {
     // Initialize the UI
     $("#register-form-page").hide();
-    $("#gameover-overlay").hide(); 
+    $("#gameover-overlay").hide();
 
     $("#register-button-0").on("click", (e) => {
       e.preventDefault();

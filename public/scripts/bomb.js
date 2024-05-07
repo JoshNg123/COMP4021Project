@@ -1,6 +1,5 @@
 const Bomb = function (ctx, x, y, pressed_player) {
-
-  this.player = pressed_player; 
+  this.player = pressed_player;
 
   const sequences = {
     bomb: {
@@ -86,5 +85,6 @@ const Bomb = function (ctx, x, y, pressed_player) {
     draw: sprite.drawObject,
     update: update,
     move: move,
+    player: this.player,
   };
 };

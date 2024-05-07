@@ -14,7 +14,7 @@ const Registration = (function () {
         if (onSuccess) {
           onSuccess();
         }
-      } else if (response.status === "error") { 
+      } else if (response.status === "error") {
         if (onError) {
           onError(response.error);
         }
