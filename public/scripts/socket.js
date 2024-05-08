@@ -47,6 +47,7 @@ const Socket = (function () {
 
     socket.on("challenge accepted", (pairing) => {
       pairing = JSON.parse(pairing);
+
       AcceptChallengeModal.hide();
       WaitingForOpponentModal.hide();
       CountDown.start(pairing);
@@ -63,7 +64,6 @@ const Socket = (function () {
     socket.on("pressed_key down", (key_info) => {
       const { pressed_key, pressed_player, opponent, player } =
         JSON.parse(key_info);
-      console.log("pressed_key down", key_info);
       Game.move_player(pressed_key, pressed_player, opponent, player);
     });
 

@@ -46,7 +46,6 @@ const Moving_Heart = function (ctx, x, y) {
     const x =
       Math.floor(random() * (xBoundary.max - xBoundary.min + 1)) +
       xBoundary.min;
-    console.log(x, y);
 
     sprite.setXY(x, y);
     return [x, y];
@@ -86,7 +85,7 @@ const Freeze = function (ctx, x, y) {
 
   let birthTime = performance.now();
 
-  let seed = 200;
+  let seed = 50;
 
   const getAge = function (now) {
     return now - birthTime;
@@ -111,7 +110,6 @@ const Freeze = function (ctx, x, y) {
     const x =
       Math.floor(random() * (xBoundary.max - xBoundary.min + 1)) +
       xBoundary.min;
-    console.log(x, y);
 
     sprite.setXY(x, y);
     return [x, y];
@@ -151,7 +149,7 @@ const ShootFaster = function (ctx, x, y) {
 
   let birthTime = performance.now();
 
-  let seed = 200;
+  let seed = 100;
 
   const getAge = function (now) {
     return now - birthTime;
@@ -162,7 +160,7 @@ const ShootFaster = function (ctx, x, y) {
     return x - Math.floor(x);
   };
 
-  const randomize = function (area) {
+  const randomize = function () {
     birthTime = performance.now();
 
     // Create our own random generator
@@ -176,7 +174,6 @@ const ShootFaster = function (ctx, x, y) {
     const x =
       Math.floor(random() * (xBoundary.max - xBoundary.min + 1)) +
       xBoundary.min;
-    console.log(x, y);
 
     sprite.setXY(x, y);
     return [x, y];

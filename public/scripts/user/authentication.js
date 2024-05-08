@@ -81,13 +81,12 @@ const Authentication = (function () {
       });
       response = await result.json();
       if (response.status === "success") {
-        console.log("Signout success");
         if (onSuccess) {
           onSuccess();
           user = null;
         }
       } else if (response.status === "error") {
-        console.log("Signout error");
+
         if (onError) {
           onError(response.error);
         }

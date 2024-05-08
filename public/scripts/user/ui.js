@@ -91,6 +91,7 @@ const PlayerPanel = (function () {
         () => {
           Socket.disconnect();
           $("#player-match-overlay").hide();
+          $("#welcome-message").empty();
           SignInForm.show();
         },
         (error) => {
@@ -169,16 +170,23 @@ const AcceptChallengeModal = (function () {
 
     $("#accept-challenge-button").on("click", () => {
       Socket.acceptChallenge(pairing);
+      turnOffEventListeners();
     });
 
     $("#reject-challenge-button").on("click", () => {
       Socket.rejectChallenge(pairing);
+      turnOffEventListeners();
     });
   };
 
   const hide = function () {
     $("#accept-challenge-overlay").hide();
     $("#accept-challenge-text").empty();
+  };
+
+  const turnOffEventListeners = function () {
+    $("#accept-challenge-button").off("click");
+    $("#reject-challenge-button").off("click");
   };
 
   return { initialize, createModal, hide };
@@ -254,82 +262,107 @@ const CountDown = (function () {
   return { initialize, start, reject };
 })();
 
-const gameOver = (function () {
+const GameOver = (function () {
+  const initialize = function () {
+    $("#gameover-overlay").hide();
 
-  const showGameOver = async function(opponent, player, player1, player2){
+    $("#sign-out-button").on("click", () => {
+      Authentication.signout(
+        () => {
+          $("#welcome-message").empty();
+          $("#leaderboard-list").empty();
+          $(".leaderboard").empty();
+          $(".leaderboard").hide();
+          hide();
+          SignInForm.show();
+          Socket.disconnect();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    });
+
+    $("#replay-button").on("click", () => {
+      $("#leaderboard-list").empty();
+      const leaderboardList = document.getElementById("leaderboard-list");
+      hide();
+      PlayerPanel.show();
+    });
+  };
+
+  const showGameOver = async function (opponent, player, player1, player2) {
+    let users;
     try {
       const result = await fetch("/getusers", {
         method: "GET",
       });
       const response = await result.json();
-  
+
       if (response.status === "success") {
         users = response.users;
-        console.log(users); 
-
       } else if (response.status === "error") {
         if (onError) {
           onError(response.error);
         }
       }
+      $("#gameover-overlay").show();
+
+      if (player1.get_life() > player2.get_life()) {
+        $("#winner").text(opponent);
+        const msg = "Battled with: " + player;
+        $("#loser").text(msg);
+      } else if (player1.get_life() < player2.get_life()) {
+        $("#winner").text(player);
+        const msg = "Battled with: " + opponent;
+        $("#loser").text(msg);
+      } else {
+        $("#winner").text("Tie");
+        $("#loser").text("Nice Game!");
+      }
+
+      // Convert the users object keys into an array
+      const userKeys = Object.keys(users);
+
+      // Sort the user keys based on the corresponding victory counts in descending order
+      userKeys.sort((a, b) => users[b].victories - users[a].victories);
+
+      // Get the leaderboard list element
+      const leaderboardList = document.getElementById("leaderboard-list");
+
+      // Define the limit for the number of players to display
+      const limit = 5;
+
+      // Iterate over the sorted user keys array up to the defined limit
+      for (let i = 0; i < Math.min(limit, userKeys.length); i++) {
+        const userKey = userKeys[i];
+        const user = users[userKey];
+
+        const listItem = document.createElement("li");
+
+        const playerName = document.createElement("span");
+        playerName.className = "player-name";
+        playerName.textContent = userKey;
+
+        const playerScore = document.createElement("span");
+        playerScore.className = "player-score";
+        playerScore.textContent = user.victories;
+
+        listItem.appendChild(playerName);
+        listItem.appendChild(playerScore);
+
+        leaderboardList.appendChild(listItem);
+      }
     } catch (error) {
-      console.log('Error retrieving data:', error);
+      console.log("Error retrieving data:", error);
     }
+  };
 
-    $("#gameover-overlay").show();
-    if (player1.get_life() > player2.get_life()){
-      $("#winner").text(opponent);
-      const msg = "Battled with: " + player; 
-      $("#loser").text(msg);
+  const hide = function () {
+    $("#gameover-overlay").hide();
+  };
 
-    }
-    else if (player1.get_life() < player2.get_life()){
-      $("#winner").text(player);
-      const msg = "Battled with: " + opponent; 
-      $("#loser").text(msg);
-    }
-    else{
-      $("#winner").text("Tie");
-      $("#loser").text("Nice Game!");
-    }
-
-
-    // Convert the users object keys into an array
-    const userKeys = Object.keys(users);
-
-    // Sort the user keys based on the corresponding victory counts in descending order
-    userKeys.sort((a, b) => users[b].victories - users[a].victories);
-
-    // Get the leaderboard list element
-    const leaderboardList = document.getElementById('leaderboard-list');
-
-    // Define the limit for the number of players to display
-    const limit = 5;
-
-    // Iterate over the sorted user keys array up to the defined limit
-    for (let i = 0; i < Math.min(limit, userKeys.length); i++) {
-      const userKey = userKeys[i];
-      const user = users[userKey];
-
-      const listItem = document.createElement('li');
-
-      const playerName = document.createElement('span');
-      playerName.className = 'player-name';
-      playerName.textContent = userKey;
-
-      const playerScore = document.createElement('span');
-      playerScore.className = 'player-score';
-      playerScore.textContent = user.victories;
-
-      listItem.appendChild(playerName);
-      listItem.appendChild(playerScore);
-
-      leaderboardList.appendChild(listItem);
-    }
-
-  }
-  return {showGameOver};
-
+  return { showGameOver, hide, initialize };
 })();
 
 const UI = (function () {
@@ -341,6 +374,7 @@ const UI = (function () {
     AcceptChallengeModal,
     WaitingForOpponentModal,
     CountDown,
+    GameOver,
   ];
 
   // This function initializes the UI

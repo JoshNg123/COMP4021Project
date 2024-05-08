@@ -147,23 +147,16 @@
             <img src = "./assets/trophy.png" id = "trophyimg" height="150" width="150">
             <div id = "winner">  </div>
             <div id = "loser"> </div>
-
-            <button class="button" id="match-back-button">Replay!</button>
-            <button class="button" id="match-back-button">Sign Out</button>
-
-            
+            <button class="button" id="replay-button">Replay!</button>
+            <button class="button" id="sign-out-button">Sign Out</button>
           </div>
           <div class="item" id="leaderboard">
             <div id = "box-title">Leaderboard</div>
-
             <div class="leaderboard">
               <ol id="leaderboard-list">
                 <!-- The leaderboard entries will be dynamically added here -->
               </ol>
             </div>
-
-  
-              
             <div id="leaderboard"></div>
           </div>
         </div>
@@ -175,17 +168,17 @@
     </div>
 
     <script src="/socket.io/socket.io.min.js"></script>
-    <script src="./scripts/ui.js"></script>
-    <script src="./scripts/registration.js"></script>
-    <script src="./scripts/authentication.js"></script>
+    <script src="./scripts/user/ui.js"></script>
+    <script src="./scripts/user/registration.js"></script>
+    <script src="./scripts/user/authentication.js"></script>
     <script src="./scripts/socket.js"></script>
-    <script src="./scripts/game.js"></script>
-    <script src="./scripts/bounding_box.js"></script>
-    <script src="./scripts/sprite.js"></script>
-    <script src="./scripts/player.js"></script>
-    <script src="./scripts/bomb.js"></script>
-    <script src="./scripts/heart.js"></script>
-    <script src="./scripts/power_up.js"></script>
+    <script src="./scripts/game/game.js"></script>
+    <script src="./scripts/game/bounding_box.js"></script>
+    <script src="./scripts/game/sprite.js"></script>
+    <script src="./scripts/game/player.js"></script>
+    <script src="./scripts/game/bomb.js"></script>
+    <script src="./scripts/game/heart.js"></script>
+    <script src="./scripts/game/power_up.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -203,12 +196,6 @@
               PlayerPanel.hide();
             }
           );
-          $("#start-game-button").on("click", () => {
-            // need to also check both players are matched --> if not cannot start game !
-            event.preventDefault(); 
-            $("#player-match-overlay").hide();
-          }); 
-
       }); 
     </script>
   </body>

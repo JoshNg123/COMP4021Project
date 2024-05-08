@@ -43,8 +43,8 @@ const Game = (function () {
   let shootFasterX = 550;
   let shootFasterY = 350;
   let shootFasterExist = true;
-  let playerShootInterval = 2000;
-  let opponentShootInterval = 2000;
+  let playerShootFaster = false;
+  let opponentShootFaster = false;
   let playerShootIntervalID;
   let opponentShootIntervalID;
 
@@ -112,7 +112,6 @@ const Game = (function () {
       for (let i = 0; i < heartarr2.length; i++) {
         heartarr2[i].update(now);
       }
-
       for (let i = 0; i < bombs.length; i++) {
         bombs[i].update(now);
         const { x, y } = bombs[i].getXY();
@@ -172,17 +171,19 @@ const Game = (function () {
 
         if (shootFaster.getBoundingBox().isPointInBox(x, y)) {
           if (bombs[i].player == "player1") {
+            canShootOpponent = true;
+            opponentShootFaster = true;
             clearTimeout(opponentShootIntervalID);
-            opponentShootInterval = 200;
             setTimeout(() => {
-              opponentShootInterval = 2000;
-            }, 5000);
+              opponentShootFaster = false;
+            }, 9000);
           } else if (bombs[i].player == "player2") {
+            canShootPlayer = true;
+            playerShootFaster = true;
             clearTimeout(playerShootIntervalID);
-            playerShootInterval = 200;
             setTimeout(() => {
-              playerShootInterval = 2000;
-            }, 5000);
+              playerShootFaster = false;
+            }, 9000);
           }
           bombs.splice(i, 1);
           i--;
@@ -235,8 +236,44 @@ const Game = (function () {
         player1.get_life() == 0 ||
         player2.get_life() == 0
       ) {
-        gameOver.showGameOver(opponent, player, player1, player2); 
+        // Reset values
         context.clearRect(0, 0, cv.width, cv.height);
+        $(document).off("keydown");
+        $(document).off("keypress");
+        $(document).off("keyup");
+        GameOver.showGameOver(opponent, player, player1, player2);
+
+        bombs = [];
+
+        gameStartTime = 0;
+
+        canMoveOpponent = true;
+        canMovePlayer = true;
+
+        canShootOpponent = true;
+        canShootPlayer = true;
+
+        heartarr1 = [];
+        heartarr2 = [];
+
+        // Maximum age of the heart power-up in milliseconds
+        movingHeartX = 300;
+        movingHeartY = 300;
+        heartExist = true;
+
+        // Freeze Power up variables
+        freezeExist = true;
+        freezeX = 350;
+        freezeY = 250;
+        opponentfreeze = false;
+        playerfreeze = false;
+
+        // Shoot variables
+        shootFasterX = 550;
+        shootFasterY = 350;
+        shootFasterExist = true;
+        playerShootFaster = false;
+        opponentShootFaster = false;
         return;
       }
 
@@ -268,55 +305,95 @@ const Game = (function () {
         bombs[i].draw();
       }
 
-      //all the event listeners here
-      $(document).on("keydown", function (event) {
-        pressed_key = event.keyCode;
-        if (playername == opponent && canMoveOpponent && !opponentfreeze) {
-          Socket.sendKeyInfoDown(pressed_key, "player1", opponent, player);
-          canMoveOpponent = false;
-          setTimeout(() => {
-            canMoveOpponent = true;
-          }, 50);
-        }
-
-        if (playername == player && canMovePlayer && !playerfreeze) {
-          Socket.sendKeyInfoDown(pressed_key, "player2", opponent, player);
-          canMovePlayer = false;
-          setTimeout(() => {
-            canMovePlayer = true;
-          }, 50);
-        }
-      });
-
-      $(document).on("keyup", function (event) {
-        pressed_key = event.keyCode;
-        if (playername == opponent) {
-          Socket.sendKeyInfoUp(pressed_key, "player1", opponent, player);
-        } else {
-          Socket.sendKeyInfoUp(pressed_key, "player2", opponent, player);
-        }
-      });
-
-      $(document).on("keypress", function (event) {
-        if (event.keyCode == 32) {
-          if (playername == opponent && canShootOpponent) {
-            Socket.shoot("player1", opponent, player);
-            canShootOpponent = false;
-            opponentShootIntervalID = setTimeout(() => {
-              canShootOpponent = true;
-            }, playerShootInterval);
-          } else if (playername == player && canShootPlayer) {
-            Socket.shoot("player2", opponent, player);
-            canShootPlayer = false;
-            playerShootIntervalID = setTimeout(() => {
-              canShootPlayer = true;
-            }, playerShootInterval);
-          }
-        }
-      });
-
       requestAnimationFrame(doFrame);
     }
+
+    //all the event listeners here
+    $(document).on("keydown", function (event) {
+      pressed_key = event.keyCode;
+      if (
+        playername == opponent &&
+        canMoveOpponent &&
+        !opponentfreeze &&
+        (pressed_key == 37 || pressed_key == 39)
+      ) {
+        // console.log("Opponent is moving");
+        Socket.sendKeyInfoDown(pressed_key, "player1", opponent, player);
+        canMoveOpponent = false;
+        setTimeout(() => {
+          canMoveOpponent = true;
+        }, 150);
+      }
+      if (
+        playername == player &&
+        canMovePlayer &&
+        !playerfreeze &&
+        (pressed_key == 37 || pressed_key == 39)
+      ) {
+        // console.log("Player is moving");
+        Socket.sendKeyInfoDown(pressed_key, "player2", opponent, player);
+        canMovePlayer = false;
+        setTimeout(() => {
+          canMovePlayer = true;
+        }, 150);
+      }
+    });
+
+    $(document).on("keyup", function (event) {
+      pressed_key = event.keyCode;
+      if (playername == opponent) {
+        Socket.sendKeyInfoUp(pressed_key, "player1", opponent, player);
+      } else {
+        Socket.sendKeyInfoUp(pressed_key, "player2", opponent, player);
+      }
+    });
+
+    $(document).on("keypress", function (event) {
+      if (event.keyCode == 32) {
+        if (
+          playername == opponent &&
+          canShootOpponent &&
+          !opponentShootFaster
+        ) {
+          // console.log("Opponent is shooting");
+          Socket.shoot("player1", opponent, player);
+          canShootOpponent = false;
+          opponentShootIntervalID = setTimeout(() => {
+            canShootOpponent = true;
+          }, 2000);
+        } else if (
+          playername == player &&
+          canShootPlayer &&
+          !playerShootFaster
+        ) {
+          // console.log("Player is shooting");
+          Socket.shoot("player2", opponent, player);
+          canShootPlayer = false;
+          playerShootIntervalID = setTimeout(() => {
+            canShootPlayer = true;
+          }, 2000);
+        }
+      }
+      if (event.keyCode == 67 || event.keyCode == 99) {
+        if (playername == opponent && canShootOpponent && opponentShootFaster) {
+          Socket.shoot("player1", oppon1ent, player);
+          canShootOpponent = false;
+          opponentShootIntervalID = setTimeout(() => {
+            canShootOpponent = true;
+          }, 300);
+        } else if (
+          playername == player &&
+          canShootPlayer &&
+          playerShootFaster
+        ) {
+          Socket.shoot("player2", opponent, player);
+          canShootPlayer = false;
+          playerShootIntervalID = setTimeout(() => {
+            canShootPlayer = true;
+          }, 300);
+        }
+      }
+    });
 
     requestAnimationFrame(doFrame);
   };
@@ -382,5 +459,6 @@ const Game = (function () {
       bomb.move(2);
     }
   };
+
   return { start, move_player, stop_player, shoot };
 })();

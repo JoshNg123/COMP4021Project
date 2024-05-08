@@ -95,24 +95,38 @@ io.on("connection", (socket) => {
 
   socket.on("keypress info down", (info) => {
     const { pressed_key, pressed_player, opponent, player } = JSON.parse(info);
-    sockets[player].socket.emit("pressed_key down", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
-    sockets[opponent].socket.emit("pressed_key down", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
-
+    sockets[player].socket.emit(
+      "pressed_key down",
+      JSON.stringify({ pressed_key, pressed_player, opponent, player })
+    );
+    sockets[opponent].socket.emit(
+      "pressed_key down",
+      JSON.stringify({ pressed_key, pressed_player, opponent, player })
+    );
   });
 
   socket.on("keypress info up", (info) => {
     const { pressed_key, pressed_player, opponent, player } = JSON.parse(info);
-    sockets[player].socket.emit("pressed_key up", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
-    sockets[opponent].socket.emit("pressed_key up", JSON.stringify({pressed_key, pressed_player, opponent, player})); 
-
+    sockets[player].socket.emit(
+      "pressed_key up",
+      JSON.stringify({ pressed_key, pressed_player, opponent, player })
+    );
+    sockets[opponent].socket.emit(
+      "pressed_key up",
+      JSON.stringify({ pressed_key, pressed_player, opponent, player })
+    );
   });
 
-  socket.on("shoot info", (info) =>{
-    const {pressed_player, opponent, player} = JSON.parse(info)
+  socket.on("shoot info", (info) => {
+    const { pressed_player, opponent, player } = JSON.parse(info);
     //console.log(info)
-    sockets[player].socket.emit("shooting", JSON.stringify({pressed_player, opponent, player})); 
-    sockets[opponent].socket.emit("shooting", JSON.stringify({pressed_player, opponent, player})); 
-
-  }); 
-
+    sockets[player].socket.emit(
+      "shooting",
+      JSON.stringify({ pressed_player, opponent, player })
+    );
+    sockets[opponent].socket.emit(
+      "shooting",
+      JSON.stringify({ pressed_player, opponent, player })
+    );
+  });
 });
