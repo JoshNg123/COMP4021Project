@@ -102,5 +102,21 @@ router.get("/getusers", (req, res) => {
   res.json({ users: data, status: "success" });
 });
 
+router.post("/updateVictory", (req, res) => {
+  const { winner } = req.body;
+  const users = JSON.parse(fs.readFileSync("data/users.json"));
+
+  for (const userId in users) {
+    if (userId === winner) {
+      users[userId].victories++;
+      break;
+    }
+  }
+
+  fs.writeFileSync("./data/users.json", JSON.stringify(users, null, " "));
+
+  res.json({ status: "success" });
+});
+
 
 module.exports = router;

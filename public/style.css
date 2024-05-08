@@ -428,3 +428,11 @@ li {
   font-weight: bold;
   color: black;
 }
+
+.stats {
+  padding-top: 10px; 
+  font-family: "Jersey 25";
+  font-size: 30px;
+  color: black;
+  text-align: center;
+}

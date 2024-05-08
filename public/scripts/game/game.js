@@ -48,10 +48,23 @@ const Game = (function () {
   let playerShootIntervalID;
   let opponentShootIntervalID;
 
+  //initialize the music
+  const sounds = {
+    background: new Audio("./assets/backgroundmusic.mp3"),
+    shoot: new Audio("./assets/shoot.mp3"),
+  };
+
+  //keep statistics
+  let player1BombCount = 0; 
+  let player2BombCount = 0; 
+
   const start = (pairing) => {
     // Initialize the game
     cv = $("canvas").get(0);
     context = cv.getContext("2d");
+
+    playerShootIntervalID = 0;
+    opponentShootIntervalID = 0;
 
     // Initialize the game area
     gameArea = BoundingBox(context, 200, 60, 420, 800);
@@ -241,7 +254,8 @@ const Game = (function () {
         $(document).off("keydown");
         $(document).off("keypress");
         $(document).off("keyup");
-        GameOver.showGameOver(opponent, player, player1, player2);
+        GameOver.showGameOver(opponent, player, player1, player2, player1BombCount, player2BombCount);
+        sounds.background.pause(); 
 
         bombs = [];
 
@@ -307,6 +321,9 @@ const Game = (function () {
 
       requestAnimationFrame(doFrame);
     }
+
+    sounds.background.currentTime = 0; 
+    sounds.background.play(); 
 
     //all the event listeners here
     $(document).on("keydown", function (event) {
@@ -445,18 +462,24 @@ const Game = (function () {
   };
 
   const shoot = (pressed_player, opponent, player) => {
+    sounds.shoot.pause(); 
+    sounds.shoot.currentTime = 0; 
+    sounds.shoot.play();  
+
     if (pressed_player === "player1") {
       let { x, y } = player1.getPos();
       y = y + 50;
       const bomb = Bomb(context, x, y, pressed_player);
       bombs.push(bomb);
       bomb.move(1);
+      player1BombCount++; 
     } else if (pressed_player === "player2") {
       let { x, y } = player2.getPos();
       y = y - 50;
       const bomb = Bomb(context, x, y, pressed_player);
       bombs.push(bomb);
       bomb.move(2);
+      player1BombCount++; 
     }
   };
 

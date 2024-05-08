@@ -291,35 +291,58 @@ const GameOver = (function () {
     });
   };
 
-  const showGameOver = async function (opponent, player, player1, player2) {
-    let users;
-    try {
-      const result = await fetch("/getusers", {
-        method: "GET",
-      });
-      const response = await result.json();
-
-      if (response.status === "success") {
-        users = response.users;
-      } else if (response.status === "error") {
-        if (onError) {
-          onError(response.error);
-        }
-      }
-      $("#gameover-overlay").show();
-
+  const showGameOver = async function (opponent, player, player1, player2, player1BombCount, player2BombCount) {
       if (player1.get_life() > player2.get_life()) {
         $("#winner").text(opponent);
         const msg = "Battled with: " + player;
         $("#loser").text(msg);
+        if (Authentication.getUser().username == opponent){
+          const updateOpponentResult = await fetch("/updateVictory", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ winner: opponent }),
+          });
+          const updateOpponentresponse = await updateOpponentResult.json();
+        }
       } else if (player1.get_life() < player2.get_life()) {
         $("#winner").text(player);
         const msg = "Battled with: " + opponent;
         $("#loser").text(msg);
+        if (Authentication.getUser().username == player){
+
+          const updatePlayerResult = await fetch("/updateVictory", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ winner: player }),
+          });
+          const updatePlayerresponse = await updatePlayerResult.json();
+        } 
+
       } else {
         $("#winner").text("Tie");
         $("#loser").text("Nice Game!");
       }
+
+      let statstext1 = opponent + " shot " + player1BombCount + " times!"; 
+      $("#stats1").text(statstext1); 
+      let statstext2 = player + " shot " + player2BombCount + " times!"; 
+      $("#stats2").text(statstext2); 
+
+      let users;
+      try {
+        const result = await fetch("/getusers", {
+          method: "GET",
+        });
+        const response = await result.json();
+  
+        if (response.status === "success") {
+          users = response.users;
+        } else if (response.status === "error") {
+          if (onError) {
+            onError(response.error);
+          }
+        }
+        $("#gameover-overlay").show();
 
       // Convert the users object keys into an array
       const userKeys = Object.keys(users);
@@ -331,7 +354,7 @@ const GameOver = (function () {
       const leaderboardList = document.getElementById("leaderboard-list");
 
       // Define the limit for the number of players to display
-      const limit = 5;
+      const limit = 3;
 
       // Iterate over the sorted user keys array up to the defined limit
       for (let i = 0; i < Math.min(limit, userKeys.length); i++) {
