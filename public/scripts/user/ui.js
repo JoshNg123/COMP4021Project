@@ -352,19 +352,14 @@ const GameOver = (function () {
       }
       $("#gameover-overlay").show();
 
-      // Convert the users object keys into an array
       const userKeys = Object.keys(users);
 
-      // Sort the user keys based on the corresponding victory counts in descending order
       userKeys.sort((a, b) => users[b].victories - users[a].victories);
 
-      // Get the leaderboard list element
       const leaderboardList = document.getElementById("leaderboard-list");
 
-      // Define the limit for the number of players to display
       const limit = 3;
 
-      // Iterate over the sorted user keys array up to the defined limit
       for (let i = 0; i < Math.min(limit, userKeys.length); i++) {
         const userKey = userKeys[i];
         const user = users[userKey];
