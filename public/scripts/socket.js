@@ -97,6 +97,10 @@ const Socket = (function () {
     socket = null;
   };
 
+  const returnToPlayerArea = function (username) {
+    socket.emit("return to player area", JSON.stringify({ username }));
+  };
+
   //This function send keydown information to the server
   const sendKeyInfoDown = function (
     pressed_key,
@@ -141,5 +145,6 @@ const Socket = (function () {
     sendKeyInfoDown,
     sendKeyInfoUp,
     shoot,
+    returnToPlayerArea,
   };
 })();

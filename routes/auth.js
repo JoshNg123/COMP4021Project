@@ -57,7 +57,7 @@ router.post("/signin", (req, res) => {
     return;
   }
 
-  if(activePlayers.includes(username)) {
+  if (activePlayers.includes(username)) {
     res.json({ status: "error", error: "User is already signed in." });
     return;
   }
@@ -89,7 +89,7 @@ router.get("/signout", (req, res) => {
   activePlayers = activePlayers.filter(
     (player) => player !== req.session.user.username
   );
- delete req.session.user;
+  delete req.session.user;
   //
   // Sending a success response
   //
@@ -117,6 +117,5 @@ router.post("/updateVictory", (req, res) => {
 
   res.json({ status: "success" });
 });
-
 
 module.exports = router;

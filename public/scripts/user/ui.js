@@ -125,6 +125,8 @@ const OnlinePlayersArea = (function () {
   };
 
   const update = function (users) {
+    $("#player-list").empty();
+
     const currentUser = Authentication.getUser();
 
     for (const username in users) {
@@ -135,6 +137,7 @@ const OnlinePlayersArea = (function () {
         $("#player-list").append(userElement);
       }
     }
+
     listenForChallenges();
   };
 
@@ -284,65 +287,70 @@ const GameOver = (function () {
     });
 
     $("#replay-button").on("click", () => {
+      Socket.returnToPlayerArea(Authentication.getUser().username);
       $("#leaderboard-list").empty();
-      const leaderboardList = document.getElementById("leaderboard-list");
       hide();
       PlayerPanel.show();
     });
   };
 
-  const showGameOver = async function (opponent, player, player1, player2, player1BombCount, player2BombCount) {
-      if (player1.get_life() > player2.get_life()) {
-        $("#winner").text(opponent);
-        const msg = "Battled with: " + player;
-        $("#loser").text(msg);
-        if (Authentication.getUser().username == opponent){
-          const updateOpponentResult = await fetch("/updateVictory", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ winner: opponent }),
-          });
-          const updateOpponentresponse = await updateOpponentResult.json();
-        }
-      } else if (player1.get_life() < player2.get_life()) {
-        $("#winner").text(player);
-        const msg = "Battled with: " + opponent;
-        $("#loser").text(msg);
-        if (Authentication.getUser().username == player){
-
-          const updatePlayerResult = await fetch("/updateVictory", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ winner: player }),
-          });
-          const updatePlayerresponse = await updatePlayerResult.json();
-        } 
-
-      } else {
-        $("#winner").text("Tie");
-        $("#loser").text("Nice Game!");
-      }
-
-      let statstext1 = player + " shot " + player1BombCount + " times!"; 
-      $("#stats1").text(statstext1); 
-      let statstext2 = opponent + " shot " + player2BombCount + " times!"; 
-      $("#stats2").text(statstext2); 
-
-      let users;
-      try {
-        const result = await fetch("/getusers", {
-          method: "GET",
+  const showGameOver = async function (
+    opponent,
+    player,
+    player1,
+    player2,
+    player1BombCount,
+    player2BombCount
+  ) {
+    if (player1.get_life() > player2.get_life()) {
+      $("#winner").text(opponent);
+      const msg = "Battled with: " + player;
+      $("#loser").text(msg);
+      if (Authentication.getUser().username == opponent) {
+        const updateOpponentResult = await fetch("/updateVictory", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ winner: opponent }),
         });
-        const response = await result.json();
-  
-        if (response.status === "success") {
-          users = response.users;
-        } else if (response.status === "error") {
-          if (onError) {
-            onError(response.error);
-          }
+        const updateOpponentresponse = await updateOpponentResult.json();
+      }
+    } else if (player1.get_life() < player2.get_life()) {
+      $("#winner").text(player);
+      const msg = "Battled with: " + opponent;
+      $("#loser").text(msg);
+      if (Authentication.getUser().username == player) {
+        const updatePlayerResult = await fetch("/updateVictory", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ winner: player }),
+        });
+        const updatePlayerresponse = await updatePlayerResult.json();
+      }
+    } else {
+      $("#winner").text("Tie");
+      $("#loser").text("Nice Game!");
+    }
+
+    let statstext1 = player + " shot " + player1BombCount + " times!";
+    $("#stats1").text(statstext1);
+    let statstext2 = opponent + " shot " + player2BombCount + " times!";
+    $("#stats2").text(statstext2);
+
+    let users;
+    try {
+      const result = await fetch("/getusers", {
+        method: "GET",
+      });
+      const response = await result.json();
+
+      if (response.status === "success") {
+        users = response.users;
+      } else if (response.status === "error") {
+        if (onError) {
+          onError(response.error);
         }
-        $("#gameover-overlay").show();
+      }
+      $("#gameover-overlay").show();
 
       // Convert the users object keys into an array
       const userKeys = Object.keys(users);
@@ -376,7 +384,6 @@ const GameOver = (function () {
 
         leaderboardList.appendChild(listItem);
       }
-
     } catch (error) {
       console.log("Error retrieving data:", error);
     }

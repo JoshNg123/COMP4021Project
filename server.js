@@ -21,12 +21,13 @@ app.use("/", authRoutes);
 
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const { on } = require("events");
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
 // Use a web server to listen at port 8000
 httpServer.listen(8000, () => {
-  console.log("The chat server has started...");
+  console.log("The game server has started...");
 });
 
 io.use((socket, next) => {
@@ -34,6 +35,7 @@ io.use((socket, next) => {
 });
 
 const onlinePlayers = {};
+const inGamePlayers = {};
 const sockets = {};
 
 io.on("connection", (socket) => {
@@ -47,6 +49,11 @@ io.on("connection", (socket) => {
       socketId: socket.id,
       socket: socket,
     };
+
+    if (inGamePlayers[socket.request.session.user.username]) {
+      delete inGamePlayers[socket.request.session.user.username];
+    }
+
     io.emit("add user", JSON.stringify(socket.request.session.user));
   }
 
@@ -55,6 +62,10 @@ io.on("connection", (socket) => {
       if (onlinePlayers[socket.request.session.user.username]) {
         delete onlinePlayers[socket.request.session.user.username];
         delete sockets[socket.request.session.user.username];
+      }
+
+      if (inGamePlayers[socket.request.session.user.username]) {
+        delete inGamePlayers[socket.request.session.user.username];
       }
     }
     io.emit("remove user", JSON.stringify(socket.request.session.user));
@@ -70,7 +81,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("accept challenge", (pairing) => {
+    // Move the players from onlinePlayers to inGamePlayers
+
     pairing = JSON.parse(pairing);
+    inGamePlayers[pairing.player] = onlinePlayers[pairing.player];
+    inGamePlayers[pairing.opponent] = onlinePlayers[pairing.opponent];
+    delete onlinePlayers[pairing.player];
+    delete onlinePlayers[pairing.opponent];
+
+    io.emit("users", JSON.stringify(onlinePlayers));
     sockets[pairing.player].socket.emit(
       "challenge accepted",
       JSON.stringify(pairing)
@@ -119,7 +138,6 @@ io.on("connection", (socket) => {
 
   socket.on("shoot info", (info) => {
     const { pressed_player, opponent, player } = JSON.parse(info);
-    //console.log(info)
     sockets[player].socket.emit(
       "shooting",
       JSON.stringify({ pressed_player, opponent, player })
@@ -128,5 +146,12 @@ io.on("connection", (socket) => {
       "shooting",
       JSON.stringify({ pressed_player, opponent, player })
     );
+  });
+
+  socket.on("return to player area", (username) => {
+    username = JSON.parse(username);
+    onlinePlayers[username.username] = inGamePlayers[username.username];
+    delete inGamePlayers[username.username];
+    io.emit("users", JSON.stringify(onlinePlayers));
   });
 });
