@@ -63,8 +63,8 @@ const Game = (function () {
     cv = $("canvas").get(0);
     context = cv.getContext("2d");
 
-    playerShootIntervalID = 0;
-    opponentShootIntervalID = 0;
+    player1BombCount  = 0;
+    player2BombCount = 0;
 
     // Initialize the game area
     gameArea = BoundingBox(context, 200, 60, 420, 800);
