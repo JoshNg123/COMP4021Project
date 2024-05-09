@@ -21,12 +21,11 @@ app.use("/", authRoutes);
 
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-const { on } = require("events");
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-// Use a web server to listen at port 8000
-httpServer.listen(8000, () => {
+// Use a web server to listen at port 80
+httpServer.listen(80, () => {
   console.log("The game server has started...");
 });
 
