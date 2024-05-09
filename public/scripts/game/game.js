@@ -347,10 +347,12 @@ const Game = (function () {
       ) {
         // console.log("Opponent is moving");
         Socket.sendKeyInfoDown(pressed_key, "player1", opponent, player);
-        canMoveOpponent = false;
-        setTimeout(() => {
-          canMoveOpponent = true;
-        }, 150);
+
+        console.log("Opponent is moving");
+        // canMoveOpponent = false;
+        // setTimeout(() => {
+        //   canMoveOpponent = true;
+        // }, 150);
       }
       if (
         playername == player &&
@@ -360,10 +362,10 @@ const Game = (function () {
       ) {
         // console.log("Player is moving");
         Socket.sendKeyInfoDown(pressed_key, "player2", opponent, player);
-        canMovePlayer = false;
-        setTimeout(() => {
-          canMovePlayer = true;
-        }, 150);
+        // canMovePlayer = false;
+        // setTimeout(() => {
+        //   canMovePlayer = true;
+        // }, 150);
       }
     });
 
@@ -408,7 +410,7 @@ const Game = (function () {
           canShootOpponent = false;
           opponentShootIntervalID = setTimeout(() => {
             canShootOpponent = true;
-          }, 300);
+          }, 1000);
         } else if (
           playername == player &&
           canShootPlayer &&
@@ -418,7 +420,7 @@ const Game = (function () {
           canShootPlayer = false;
           playerShootIntervalID = setTimeout(() => {
             canShootPlayer = true;
-          }, 300);
+          }, 1000);
         }
       }
     });

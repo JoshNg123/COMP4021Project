@@ -331,9 +331,9 @@ const GameOver = (function () {
       $("#loser").text("Nice Game!");
     }
 
-    let statstext1 = player + " shot " + player1BombCount + " times!";
+    let statstext1 = opponent + " shot " + player1BombCount + " times!";
     $("#stats1").text(statstext1);
-    let statstext2 = opponent + " shot " + player2BombCount + " times!";
+    let statstext2 = player + " shot " + player2BombCount + " times!";
     $("#stats2").text(statstext2);
 
     let users;

@@ -33,10 +33,10 @@
  },
  "Player1": {
   "hash": "$2b$10$SlAiQdtjLDizKyJV5m5UZ.OORMtW8YqgcJvx5NaAx4Ue7uRcVFcgm",
-  "victories": 3
+  "victories": 12
  },
  "Player2": {
   "hash": "$2b$10$cDID1SFvO7JjfBE2P44mneUw.Fyl1bN04lcmeDo0/rv9S14lG6spq",
-  "victories": 1
+  "victories": 3
  }
 }
