@@ -410,7 +410,7 @@ const Game = (function () {
           canShootOpponent = false;
           opponentShootIntervalID = setTimeout(() => {
             canShootOpponent = true;
-          }, 1000);
+          }, 300);
         } else if (
           playername == player &&
           canShootPlayer &&
@@ -420,7 +420,7 @@ const Game = (function () {
           canShootPlayer = false;
           playerShootIntervalID = setTimeout(() => {
             canShootPlayer = true;
-          }, 1000);
+          }, 300);
         }
       }
     });
