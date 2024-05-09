@@ -64,6 +64,16 @@ canvas {
   text-align: center;
 }
 
+#signin-message {
+  font-family: "Jersey 25";
+  font-size: 18px;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
 #register-message {
   font-family: "Jersey 25";
   font-size: 18px;
@@ -370,28 +380,25 @@ input[type="password"] {
 #trophyimg {
   padding-top: 5px;
   padding-bottom: 5px;
-
 }
 
-#winner{
+#winner {
   font-family: "Jersey 25";
   font-size: 50px;
   color: black;
   text-align: center;
   padding-bottom: 5px;
-
 }
 
-#loser{
+#loser {
   font-family: "Jersey 25";
   font-size: 30px;
   color: black;
   text-align: center;
   padding-bottom: 5px;
-
 }
 
-#congrats{
+#congrats {
   font-family: "Jersey 25";
   font-size: 30px;
   color: black;
@@ -402,7 +409,6 @@ input[type="password"] {
   padding: 20px;
   border-radius: 10px;
 }
-
 
 ol {
   list-style-type: none;
@@ -430,7 +436,7 @@ li {
 }
 
 .stats {
-  padding-top: 10px; 
+  padding-top: 10px;
   font-family: "Jersey 25";
   font-size: 30px;
   color: black;
