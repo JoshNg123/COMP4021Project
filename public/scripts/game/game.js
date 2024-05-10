@@ -33,8 +33,8 @@ const Game = (function () {
   // Freeze Power up variables
   let freezeMaxAge = 12000;
   let freezeExist = true;
-  let freezeX = 350;
-  let freezeY = 250;
+  let freezeX = 450;
+  let freezeY = 300;
   let opponentfreeze = false;
   let playerfreeze = false;
 
